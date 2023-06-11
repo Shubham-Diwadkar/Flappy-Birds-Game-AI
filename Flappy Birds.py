@@ -90,27 +90,29 @@ class Bird:
     # Method to retrieve the mask for the bird's image
     def get_mask(self):
         return pygame.mask.from_surface(self.img)   # The mask is created and returned
-    
-def draw_window(win, bird):
-    win.blit(BG_IMG, (0, 0))
-    bird.draw(win)
-    pygame.display.update()
 
+# Method to draw the game window
+def draw_window(win, bird):
+    win.blit(BG_IMG, (0, 0))    # Blit the background image onto the window at position (0, 0)
+    bird.draw(win)  # Draw the bird onto the window
+    pygame.display.update() # Update the display to show the changes
+
+# Main game loop that handles events, updates the bird's position, and redraws the game window
 def main():
-    bird = Bird(200, 200)
-    win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
-    clock = pygame.time.Clock()
+    bird = Bird(200, 200)  # Create a bird object with initial position (200, 200)
+    win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))  # Set up the game window with the specified width and height
+    clock = pygame.time.Clock()  # Create a clock object to control the frame rate
 
     run = True
     while run:
-        clock.tick(30)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+        clock.tick(30)  # Limit the frame rate to 30 frames per second
+        for event in pygame.event.get():  # Check for events (e.g., user input)
+            if event.type == pygame.QUIT:  # If the user clicks the close button, stop the game loop
                 run = False
-        bird.move()
-        draw_window(win, bird)
+        bird.move()  # Move the bird based on its current velocity and position
+        draw_window(win, bird)  # Draw the game window with the bird's current state
     
-    pygame.quit()
-    quit()
+    pygame.quit()  # Quit Pygame
+    quit()  # Quit the Python program
 
-main()
+main()  # Main Entry point of the program
