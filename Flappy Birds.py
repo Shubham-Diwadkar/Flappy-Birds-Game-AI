@@ -1,32 +1,40 @@
-import pygame
-import neat
-import time
-import os
-import random
+# Importing required modules
+import pygame  # Import the pygame library for game development
+import neat  # Import the neat library for neuroevolution of augmenting topologies
+import time  # Import the time module for time-related functions
+import os  # Import the os module for operating system-related functions
+import random  # Import the random module for generating random numbers
 
-WIN_WIDTH = 600
-WIN_HEIGHT = 700
+# Defining constants for the game window
+WIN_WIDTH = 600  # Width of the game window in pixels
+WIN_HEIGHT = 700  # Height of the game window in pixels
 
+# Defining constants for loading bird images
 BIRD_IMGS = [pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird1.png"))), pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird2.png"))), pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird3.png")))]
+
+# Defining constants for loading pipe, base, and background images
 PIPE_IMG = pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "pipe.png")))
 BASE_IMG = pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "base.png")))
 BG_IMG = pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bg.png")))
 
+# Defining a class "Bird"
 class Bird:
-    IMGS = BIRD_IMGS
-    MAX_ROTATION = 25
-    ROTATION_VALOCITY = 20
-    ANIMATION_TIME = 5
+    IMGS = BIRD_IMGS  # Assigns the list of bird images to the IMGS variable
+    MAX_ROTATION = 25  # Maximum rotation angle for the bird image
+    ROTATION_VELOCITY = 20  # Velocity at which the bird image rotates
+    ANIMATION_TIME = 5  # Time duration for each frame of bird animation
 
+# # Constructor method for creating a new Bird object
     def __init__(self, x, y):
-        self.x = x
-        self.y = y
-        self.tilt = 0
-        self.tick_count = 0
-        self.velocity = 0
-        self.height = self.y
-        self.img_count = 0
-        self.img = self.IMGS[0]
+        self.x = x  # X-coordinate of the bird's position
+        self.y = y  # Y-coordinate of the bird's position
+        self.tilt = 0  # Current tilt angle of the bird
+        self.tick_count = 0  # Number of game ticks since the bird's last jump
+        self.velocity = 0  # Current vertical velocity of the bird
+        self.height = self.y  # The height of the bird's position at the start
+        self.img_count = 0  # Counter for animating the bird's images
+        self.img = self.IMGS[0]  # Current image of the bird
+
     
     def jump(self):
         self.velocity = -10.5
