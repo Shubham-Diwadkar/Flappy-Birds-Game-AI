@@ -24,7 +24,7 @@ class Bird:
     ROTATION_VELOCITY = 20  # Velocity at which the bird image rotates
     ANIMATION_TIME = 5  # Time duration for each frame of bird animation
 
-# # Constructor method for creating a new Bird object
+    # Constructor method for creating a new Bird object
     def __init__(self, x, y):
         self.x = x  # X-coordinate of the bird's position
         self.y = y  # Y-coordinate of the bird's position
@@ -35,36 +35,38 @@ class Bird:
         self.img_count = 0  # Counter for animating the bird's images
         self.img = self.IMGS[0]  # Current image of the bird
 
-    
+    # Method to make the bird jump
     def jump(self):
-        self.velocity = -10.5
-        self.tick_count = 0
-        self.height = self.y
+        self.velocity = -10.5  # Set the velocity of the bird to make it move upwards
+        self.tick_count = 0  # Reset the tick count to start tracking the time since the last jump
+        self.height = self.y  # Store the current height of the bird for reference
 
+    # Method to make the bird move
     def move(self):
-        self.tick_count += 1
+        self.tick_count += 1  # Increment the tick count to track the time
     
-        displacement = self.velocity * self.tick_count + 1.5 * self.tick_count ** 2
-
-        if displacement >= 16:
+        displacement = self.velocity * self.tick_count + 1.5 * self.tick_count ** 2  # Calculate the displacement based on velocity and time
+    
+        if displacement >= 16:  # Limit the maximum displacement
             displacement = 16
 
-        if displacement < 0:
+        if displacement < 0:  # Add additional displacement adjustment for upward movement
             displacement -= 2
 
-        self.y = self.y + displacement
+        self.y = self.y + displacement  # Update the vertical position of the bird
 
-        if displacement < 0 or self.y < self.height + 50:
-            if self.tilt < self.MAX_ROTATION:
+        if displacement < 0 or self.y < self.height + 50:  # Check if bird is moving upward or near its highest point
+            if self.tilt < self.MAX_ROTATION:  # Adjust the tilt angle of the bird for upward movement
                 self.tilt = self.MAX_ROTATION
         else:
-            if self.tilt > -90:
+            if self.tilt > -90:  # Adjust the tilt angle of the bird for downward movement
                 self.tilt -= self.ROTATION_VALOCITY
 
+    # Method to draw the bird on the game window
     def draw(self, win):
-        self.img_count += 1
+        self.img_count += 1  # Increment the image count for animation
 
-        if self.img_count < self.ANIMATION_TIME:
+        if self.img_count < self.ANIMATION_TIME:  # Determine the current bird image based on the image count
             self.img = self.IMGS[0]
         elif self.img_count < self.ANIMATION_TIME * 2:
             self.img = self.IMGS[1]
@@ -76,17 +78,18 @@ class Bird:
             self.img = self.IMGS[0]
             self.img_count = 0
 
-        if self.tilt <= -80:
+        if self.tilt <= -80:  # Adjust the bird image and count for extreme upward tilt
             self.img = self.IMGS[1]
             self.img_count = self.ANIMATION_TIME * 2
 
-        rotated_image = pygame.transform.rotate(self.img, self.tilt)
-        new_rectangle = rotated_image.get_rect(center=self.img.get_rect(topleft=(self.x, self.y)).center)
-        win.blit(rotated_image, new_rectangle.topleft)
+        rotated_image = pygame.transform.rotate(self.img, self.tilt)  # Rotate the bird image based on tilt angle
+        new_rectangle = rotated_image.get_rect(center=self.img.get_rect(topleft=(self.x, self.y)).center)  # Create a new rectangle for rotated image positioning
+        win.blit(rotated_image, new_rectangle.topleft)  # Draw the rotated bird image on the window
 
 
+    # Method to retrieve the mask for the bird's image
     def get_mask(self):
-        return pygame.mask.from_surface(self.img)
+        return pygame.mask.from_surface(self.img)   # The mask is created and returned
     
 def draw_window(win, bird):
     win.blit(BG_IMG, (0, 0))
