@@ -1,54 +1,63 @@
-import pygame
-import neat
-import time
-import os
-import random
-pygame.font.init()
+import pygame# Import the Pygame library
+import neat# Import the NEAT library for neuroevolution
+import time# Import the time module
+import os# Import the os module for file path operations
+import random# Import the random module for randomization
 
-WIN_WIDTH = 500
-WIN_HEIGHT = 800
+pygame.font.init()# Initialize the Pygame font module
 
+WIN_WIDTH = 500# Set the width of the game window
+WIN_HEIGHT = 800# Set the height of the game window
+
+# Load and scale the bird images
 BIRD_IMGS = [pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird1.png"))), pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird2.png"))), pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird3.png")))]
-PIPE_IMG = pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "pipe.png")))
-BASE_IMG = pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "base.png")))
-BG_IMG = pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bg.png")))
 
-STAT_FONT = pygame.font.SysFont("comicsans", 50)
+PIPE_IMG = pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "pipe.png")))# Load and scale the pipe image
+BASE_IMG = pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "base.png")))# Load and scale the base image
+BG_IMG = pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bg.png")))# Load and scale the background image
+
+STAT_FONT = pygame.font.SysFont("comicsans", 50)# Create a font object for displaying text
 
 class Bird:
-    IMGS = BIRD_IMGS
-    MAX_ROTATION = 25
-    ROTATION_VALOCITY = 20
-    ANIMATION_TIME = 5
+    IMGS = BIRD_IMGS# Assign the bird images to the class attribute IMGS
+    MAX_ROTATION = 25# Maximum tilt rotation of the bird
+    ROTATION_VALOCITY = 20# Velocity of the rotation
+    ANIMATION_TIME = 5# Animation time for the bird's wing flap
 
+    # Constructor method to initialize the bird object
     def __init__(self, x, y):
-        self.x = x
-        self.y = y
-        self.tilt = 0
-        self.tick_count = 0
-        self.velocity = 0
-        self.height = self.y
-        self.img_count = 0
-        self.img = self.IMGS[0]
+        self.x = x# Current x-coordinate of the bird
+        self.y = y# Current y-coordinate of the bird
+        self.tilt = 0# Current tilt angle of the bird
+        self.tick_count = 0# Counter for tracking time
+        self.velocity = 0# Current velocity of the bird
+        self.height = self.y# Initial height of the bird
+        self.img_count = 0# Counter for tracking bird image animation
+        self.img = self.IMGS[0]# Current image of the bird
     
+    # Method for making the bird jump
     def jump(self):
-        self.velocity = -10.5
-        self.tick_count = 0
-        self.height = self.y
+        self.velocity = -10.5# Set the velocity to make the bird jump
+        self.tick_count = 0# Reset the tick counter
+        self.height = self.y# Set the initial height of the bird
 
+    # Method for moving the bird
     def move(self):
-        self.tick_count += 1
+        self.tick_count += 1# Increase the tick counter by 1
     
-        displacement = self.velocity * self.tick_count + 1.5 * self.tick_count ** 2
+        displacement = self.velocity * self.tick_count + 1.5 * self.tick_count ** 2# Calculate the displacement
 
+        # Limit the maximum downward velocity
         if displacement >= 16:
             displacement = 16
 
+        # Fine-tune the upward jump
         if displacement < 0:
             displacement -= 2
 
-        self.y = self.y + displacement
+        self.y = self.y + displacement# Update the y-coordinate of the bird
 
+        # Adjust the tilt angle based on the bird's movement
         if displacement < 0 or self.y < self.height + 50:
             if self.tilt < self.MAX_ROTATION:
                 self.tilt = self.MAX_ROTATION
@@ -56,9 +65,11 @@ class Bird:
             if self.tilt > -90:
                 self.tilt -= self.ROTATION_VALOCITY
 
+    # Method for drawing the bird on the game window
     def draw(self, win):
-        self.img_count += 1
+        self.img_count += 1# Increase the image counter
 
+        # Animation for wing flap
         if self.img_count < self.ANIMATION_TIME:
             self.img = self.IMGS[0]
         elif self.img_count < self.ANIMATION_TIME * 2:
@@ -71,15 +82,16 @@ class Bird:
             self.img = self.IMGS[0]
             self.img_count = 0
 
+        # Animation when the bird is nosediving
         if self.tilt <= -80:
             self.img = self.IMGS[1]
             self.img_count = self.ANIMATION_TIME * 2
 
-        rotated_image = pygame.transform.rotate(self.img, self.tilt)
-        new_rectangle = rotated_image.get_rect(center=self.img.get_rect(topleft=(self.x, self.y)).center)
-        win.blit(rotated_image, new_rectangle.topleft)
+        rotated_image = pygame.transform.rotate(self.img, self.tilt)# Rotate the bird image
+        new_rectangle = rotated_image.get_rect(center=self.img.get_rect(topleft=(self.x, self.y)).center)# Adjust the position
+        win.blit(rotated_image, new_rectangle.topleft)# Draw the rotated image onto the window
 
-
+    # Create and return a mask for collision detection
     def get_mask(self):
         return pygame.mask.from_surface(self.img)
 
