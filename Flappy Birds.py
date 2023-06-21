@@ -1,72 +1,65 @@
-# Importing required modules
-import pygame  # Import the pygame library for game development
-import neat  # Import the neat library for neuroevolution of augmenting topologies
-import time  # Import the time module for time-related functions
-import os  # Import the os module for operating system-related functions
-import random  # Import the random module for generating random numbers
+import pygame
+import neat
+import time
+import os
+import random
+pygame.font.init()
 
-# Defining constants for the game window
-WIN_WIDTH = 600  # Width of the game window in pixels
-WIN_HEIGHT = 700  # Height of the game window in pixels
+WIN_WIDTH = 500
+WIN_HEIGHT = 800
 
-# Defining constants for loading bird images
 BIRD_IMGS = [pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird1.png"))), pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird2.png"))), pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird3.png")))]
-
-# Defining constants for loading pipe, base, and background images
 PIPE_IMG = pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "pipe.png")))
 BASE_IMG = pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "base.png")))
 BG_IMG = pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bg.png")))
 
-# Defining a class "Bird"
+STAT_FONT = pygame.font.SysFont("comicsans", 50)
+
 class Bird:
-    IMGS = BIRD_IMGS  # Assigns the list of bird images to the IMGS variable
-    MAX_ROTATION = 25  # Maximum rotation angle for the bird image
-    ROTATION_VELOCITY = 20  # Velocity at which the bird image rotates
-    ANIMATION_TIME = 5  # Time duration for each frame of bird animation
+    IMGS = BIRD_IMGS
+    MAX_ROTATION = 25
+    ROTATION_VALOCITY = 20
+    ANIMATION_TIME = 5
 
-    # Constructor method for creating a new Bird object
     def __init__(self, x, y):
-        self.x = x  # X-coordinate of the bird's position
-        self.y = y  # Y-coordinate of the bird's position
-        self.tilt = 0  # Current tilt angle of the bird
-        self.tick_count = 0  # Number of game ticks since the bird's last jump
-        self.velocity = 0  # Current vertical velocity of the bird
-        self.height = self.y  # The height of the bird's position at the start
-        self.img_count = 0  # Counter for animating the bird's images
-        self.img = self.IMGS[0]  # Current image of the bird
-
-    # Method to make the bird jump
+        self.x = x
+        self.y = y
+        self.tilt = 0
+        self.tick_count = 0
+        self.velocity = 0
+        self.height = self.y
+        self.img_count = 0
+        self.img = self.IMGS[0]
+    
     def jump(self):
-        self.velocity = -10.5  # Set the velocity of the bird to make it move upwards
-        self.tick_count = 0  # Reset the tick count to start tracking the time since the last jump
-        self.height = self.y  # Store the current height of the bird for reference
+        self.velocity = -10.5
+        self.tick_count = 0
+        self.height = self.y
 
-    # Method to make the bird move
     def move(self):
-        self.tick_count += 1  # Increment the tick count to track the time
+        self.tick_count += 1
     
-        displacement = self.velocity * self.tick_count + 1.5 * self.tick_count ** 2  # Calculate the displacement based on velocity and time
-    
-        if displacement >= 16:  # Limit the maximum displacement
+        displacement = self.velocity * self.tick_count + 1.5 * self.tick_count ** 2
+
+        if displacement >= 16:
             displacement = 16
 
-        if displacement < 0:  # Add additional displacement adjustment for upward movement
+        if displacement < 0:
             displacement -= 2
 
-        self.y = self.y + displacement  # Update the vertical position of the bird
+        self.y = self.y + displacement
 
-        if displacement < 0 or self.y < self.height + 50:  # Check if bird is moving upward or near its highest point
-            if self.tilt < self.MAX_ROTATION:  # Adjust the tilt angle of the bird for upward movement
+        if displacement < 0 or self.y < self.height + 50:
+            if self.tilt < self.MAX_ROTATION:
                 self.tilt = self.MAX_ROTATION
         else:
-            if self.tilt > -90:  # Adjust the tilt angle of the bird for downward movement
+            if self.tilt > -90:
                 self.tilt -= self.ROTATION_VALOCITY
 
-    # Method to draw the bird on the game window
     def draw(self, win):
-        self.img_count += 1  # Increment the image count for animation
+        self.img_count += 1
 
-        if self.img_count < self.ANIMATION_TIME:  # Determine the current bird image based on the image count
+        if self.img_count < self.ANIMATION_TIME:
             self.img = self.IMGS[0]
         elif self.img_count < self.ANIMATION_TIME * 2:
             self.img = self.IMGS[1]
@@ -78,41 +71,147 @@ class Bird:
             self.img = self.IMGS[0]
             self.img_count = 0
 
-        if self.tilt <= -80:  # Adjust the bird image and count for extreme upward tilt
+        if self.tilt <= -80:
             self.img = self.IMGS[1]
             self.img_count = self.ANIMATION_TIME * 2
 
-        rotated_image = pygame.transform.rotate(self.img, self.tilt)  # Rotate the bird image based on tilt angle
-        new_rectangle = rotated_image.get_rect(center=self.img.get_rect(topleft=(self.x, self.y)).center)  # Create a new rectangle for rotated image positioning
-        win.blit(rotated_image, new_rectangle.topleft)  # Draw the rotated bird image on the window
+        rotated_image = pygame.transform.rotate(self.img, self.tilt)
+        new_rectangle = rotated_image.get_rect(center=self.img.get_rect(topleft=(self.x, self.y)).center)
+        win.blit(rotated_image, new_rectangle.topleft)
 
 
-    # Method to retrieve the mask for the bird's image
     def get_mask(self):
-        return pygame.mask.from_surface(self.img)   # The mask is created and returned
+        return pygame.mask.from_surface(self.img)
 
-# Method to draw the game window
-def draw_window(win, bird):
-    win.blit(BG_IMG, (0, 0))    # Blit the background image onto the window at position (0, 0)
-    bird.draw(win)  # Draw the bird onto the window
-    pygame.display.update() # Update the display to show the changes
+class Pipe:
+    GAP = 200
+    VEL = 5
 
-# Main game loop that handles events, updates the bird's position, and redraws the game window
+    def __init__(self, x):
+        self.x = x
+        self.height = 0
+
+        self.top = 0
+        self.bottom = 0
+        self.PIPE_TOP = pygame.transform.flip(PIPE_IMG, False, True)
+        self.PIPE_BOTTOM = PIPE_IMG
+
+        self.passed = False
+        self.set_height()
+
+    def set_height(self):
+        self.height = random.randrange(50, 450)
+        self.top = self.height - self.PIPE_TOP.get_height()
+        self.bottom = self.height + self.GAP
+
+    def move(self):
+        self.x -= self.VEL
+
+    def draw(self, win):
+        win.blit(self.PIPE_TOP, (self.x, self.top))
+        win.blit(self.PIPE_BOTTOM, (self.x, self.bottom))
+
+    def collide(self, bird):
+        bird_mask = bird.get_mask()
+        top_mask = pygame.mask.from_surface(self.PIPE_TOP)
+        bottom_mask = pygame.mask.from_surface(self.PIPE_BOTTOM)
+
+        top_offset = (self.x - bird.x, self.top - round(bird.y))
+        bottom_offset = (self.x - bird.x, self.bottom -round(bird.y))
+
+        b_point = bird_mask.overlap(bottom_mask, bottom_offset)
+        t_point = bird_mask.overlap(top_mask, top_offset)
+
+        if t_point or b_point:
+            return True
+        
+        return False
+    
+class Base:
+    VEL = 5
+    WIDTH = BASE_IMG.get_width()
+    IMG = BASE_IMG
+
+    def __init__(self, y):
+        self.y = y
+        self.x1 = 0
+        self.x2 = self.WIDTH
+
+    def move(self):
+        self.x1 -= self.VEL
+        self.x2 -= self.VEL
+
+        if self.x1 + self.WIDTH < 0:
+            self.x1 = self.x2 + self.WIDTH
+        
+        if self.x2 + self.WIDTH < 0:
+            self.x2 = self.x1 + self.WIDTH
+        
+    def draw(self, win):
+        win.blit(self.IMG, (self.x1, self.y))
+        win.blit(self.IMG, (self.x2, self.y))
+
+def draw_window(win, bird, pipes, base, score):
+    win.blit(BG_IMG, (0, 0))
+    
+    for pipe in pipes:
+        pipe.draw(win)
+
+    text = STAT_FONT.render("Score: "+ str(score), 1, (255, 255, 255))
+    win.blit(text, (WIN_WIDTH - 10 - text.get_width(), 10))
+
+    base.draw(win)
+
+    bird.draw(win)
+    pygame.display.update()
+
 def main():
-    bird = Bird(200, 200)  # Create a bird object with initial position (200, 200)
-    win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))  # Set up the game window with the specified width and height
-    clock = pygame.time.Clock()  # Create a clock object to control the frame rate
+    bird = Bird(230, 350)
+    base = Base(730)
+    pipes = [Pipe(600)]
+    win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
+    clock = pygame.time.Clock()
+    score = 0
 
     run = True
     while run:
-        clock.tick(30)  # Limit the frame rate to 30 frames per second
-        for event in pygame.event.get():  # Check for events (e.g., user input)
-            if event.type == pygame.QUIT:  # If the user clicks the close button, stop the game loop
+        clock.tick(30)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
                 run = False
-        bird.move()  # Move the bird based on its current velocity and position
-        draw_window(win, bird)  # Draw the game window with the bird's current state
-    
-    pygame.quit()  # Quit Pygame
-    quit()  # Quit the Python program
+        
+        #bird.move()
 
-main()  # Main Entry point of the program
+        add_pipe = False
+        rem = []
+        for pipe in pipes:
+            if pipe.collide(bird):
+                pass
+
+            if pipe.x + pipe.PIPE_TOP.get_width() < 0:
+                rem.append(pipe)
+
+            if not pipe.passed and pipe.x <bird.x:
+                pipe.passed = True
+                add_pipe = True
+            
+            pipe.move()
+        
+        if add_pipe:
+            score += 1
+            pipes.append(Pipe(600))
+
+        for r in rem:
+            pipes.remove(r)
+
+        if bird.y +bird.img.get_height() > 730:
+            pass
+
+
+        base.move()
+        draw_window(win, bird, pipes, base, score)
+    
+    pygame.quit()
+    quit()
+
+main()
