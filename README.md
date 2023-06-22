@@ -56,7 +56,8 @@ Then, execute the code, and the game window should open, allowing you to play Fl
 
 ### Phase 1
 
-[Phase 1 Output](https://media.giphy.com/media/2z6MR34gQk7XIgRxs7/giphy.gif)
+![Flappy Bird Phase 1](https://github.com/Shubham-Diwadkar/Flappy-Birds-Game-AI/assets/125255910/daf0f2be-f55c-48fc-ba55-df06e8a0f35a)
+
 
 ## Contributing
 
