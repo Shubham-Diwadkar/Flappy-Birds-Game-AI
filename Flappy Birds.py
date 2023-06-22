@@ -150,28 +150,33 @@ class Pipe:
         return False# Return False (no collision)
     
 class Base:
-    VEL = 5
-    WIDTH = BASE_IMG.get_width()
-    IMG = BASE_IMG
+    VEL = 5# Velocity of the base
+    WIDTH = BASE_IMG.get_width()# Width of the base image
+    IMG = BASE_IMG# Base image
 
+    # Constructor method to initialize the base object
     def __init__(self, y):
-        self.y = y
-        self.x1 = 0
-        self.x2 = self.WIDTH
+        self.y = y# Vertical position of the base
+        self.x1 = 0# X position of the first base image
+        self.x2 = self.WIDTH# X position of the second base image
 
+    # Method for moving the base
     def move(self):
-        self.x1 -= self.VEL
-        self.x2 -= self.VEL
+        self.x1 -= self.VEL# Move the first base image to the left
+        self.x2 -= self.VEL# Move the second base image to the left
 
+        # Reset the position of the first base image
         if self.x1 + self.WIDTH < 0:
             self.x1 = self.x2 + self.WIDTH
-        
+
+        # Reset the position of the second base image
         if self.x2 + self.WIDTH < 0:
             self.x2 = self.x1 + self.WIDTH
         
+    # Method for drawing the base
     def draw(self, win):
-        win.blit(self.IMG, (self.x1, self.y))
-        win.blit(self.IMG, (self.x2, self.y))
+        win.blit(self.IMG, (self.x1, self.y))# Draw the first base image
+        win.blit(self.IMG, (self.x2, self.y))# Draw the second base image
 
 def draw_window(win, bird, pipes, base, score):
     win.blit(BG_IMG, (0, 0))
