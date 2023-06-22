@@ -10,7 +10,9 @@ WIN_WIDTH = 500# Set the width of the game window
 WIN_HEIGHT = 800# Set the height of the game window
 
 # Load and scale the bird images
-BIRD_IMGS = [pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird1.png"))), pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird2.png"))), pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird3.png")))]
+BIRD_IMGS = [pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird1.png"))),
+             pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird2.png"))),
+             pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird3.png")))]
 
 PIPE_IMG = pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "pipe.png")))# Load and scale the pipe image
 BASE_IMG = pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "base.png")))# Load and scale the base image
@@ -178,19 +180,20 @@ class Base:
         win.blit(self.IMG, (self.x1, self.y))# Draw the first base image
         win.blit(self.IMG, (self.x2, self.y))# Draw the second base image
 
+# Method for drawing the window
 def draw_window(win, bird, pipes, base, score):
-    win.blit(BG_IMG, (0, 0))
+    win.blit(BG_IMG, (0, 0))# Draw the background image at the top-left corner of the window
     
     for pipe in pipes:
-        pipe.draw(win)
+        pipe.draw(win)# Draw each pipe on the window
 
-    text = STAT_FONT.render("Score: "+ str(score), 1, (255, 255, 255))
-    win.blit(text, (WIN_WIDTH - 10 - text.get_width(), 10))
+    text = STAT_FONT.render("Score: "+ str(score), 1, (255, 255, 255))# Render the score text
+    win.blit(text, (WIN_WIDTH - 10 - text.get_width(), 10))# Draw the score text at the top-right corner of the window
 
-    base.draw(win)
+    base.draw(win)# Draw the base at its current position
 
-    bird.draw(win)
-    pygame.display.update()
+    bird.draw(win)# Draw the bird at its current position
+    pygame.display.update()# Update the display to show all the changes made
 
 def main():
     bird = Bird(230, 350)
