@@ -118,13 +118,14 @@ class Pipe:
         self.top = self.height - self.PIPE_TOP.get_height()# Calculate the top position of the top pipe
         self.bottom = self.height + self.GAP# Calculate the top position of the bottom pipe
 
-    # Method for moving the pipes 
+    # Method for moving the pipes
     def move(self):
         self.x -= self.VEL# Move the pipe horizontally based on the velocity
 
+    # Method for drawing the pipes
     def draw(self, win):
-        win.blit(self.PIPE_TOP, (self.x, self.top))
-        win.blit(self.PIPE_BOTTOM, (self.x, self.bottom))
+        win.blit(self.PIPE_TOP, (self.x, self.top))# Draw the top pipe on the window
+        win.blit(self.PIPE_BOTTOM, (self.x, self.bottom))# Draw the bottom pipe on the window
 
     def collide(self, bird):
         bird_mask = bird.get_mask()
