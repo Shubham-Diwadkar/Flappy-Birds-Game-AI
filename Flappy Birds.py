@@ -59,9 +59,13 @@ class Bird:
 
         # Adjust the tilt angle based on the bird's movement
         if displacement < 0 or self.y < self.height + 50:
+            
+            # Limit the tilt angle to the maximum rotation angle
             if self.tilt < self.MAX_ROTATION:
                 self.tilt = self.MAX_ROTATION
         else:
+            
+            # Reduce the tilt angle by the rotation velocity
             if self.tilt > -90:
                 self.tilt -= self.ROTATION_VALOCITY
 
@@ -71,21 +75,21 @@ class Bird:
 
         # Animation for wing flap
         if self.img_count < self.ANIMATION_TIME:
-            self.img = self.IMGS[0]
+            self.img = self.IMGS[0]# Set the current image to the first image in the list
         elif self.img_count < self.ANIMATION_TIME * 2:
-            self.img = self.IMGS[1]
+            self.img = self.IMGS[1]# Set the current image to the second image in the list
         elif self.img_count < self.ANIMATION_TIME * 3:
-            self.img = self.IMGS[2]
+            self.img = self.IMGS[2]# Set the current image to the third image in the list
         elif self.img_count < self.ANIMATION_TIME * 4:
-            self.img = self.IMGS[1]
+            self.img = self.IMGS[1]# Set the current image back to the second image in the list
         elif self.img_count == self.ANIMATION_TIME * 4 + 1:
-            self.img = self.IMGS[0]
-            self.img_count = 0
+            self.img = self.IMGS[0]# Set the current image back to the first image in the list
+            self.img_count = 0# Reset the image count to 0
 
         # Animation when the bird is nosediving
         if self.tilt <= -80:
-            self.img = self.IMGS[1]
-            self.img_count = self.ANIMATION_TIME * 2
+            self.img = self.IMGS[1]# Set the current image to the second image in the list
+            self.img_count = self.ANIMATION_TIME * 2# Set the image count to twice the animation time
 
         rotated_image = pygame.transform.rotate(self.img, self.tilt)# Rotate the bird image
         new_rectangle = rotated_image.get_rect(center=self.img.get_rect(topleft=(self.x, self.y)).center)# Adjust the position
