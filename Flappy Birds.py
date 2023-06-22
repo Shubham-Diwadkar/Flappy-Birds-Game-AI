@@ -195,20 +195,21 @@ def draw_window(win, bird, pipes, base, score):
     bird.draw(win)# Draw the bird at its current position
     pygame.display.update()# Update the display to show all the changes made
 
+# Method to start the program
 def main():
-    bird = Bird(230, 350)
-    base = Base(730)
-    pipes = [Pipe(600)]
-    win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
-    clock = pygame.time.Clock()
-    score = 0
+    bird = Bird(230, 350)# Create a bird object at the specified position
+    base = Base(730)# Create a base object at the specified height
+    pipes = [Pipe(600)]# Create a list of pipes with an initial pipe
+    win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))# Create a window with the specified dimensions
+    clock = pygame.time.Clock()# Create a clock object to control the frame rate
+    score = 0# Initialize the score to 0
 
     run = True
     while run:
-        clock.tick(30)
+        clock.tick(30)# Limit the frame rate to 30 frames per second
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False
+                run = False# If the user closes the window, stop the game loop
         
         #bird.move()
 
@@ -216,32 +217,33 @@ def main():
         rem = []
         for pipe in pipes:
             if pipe.collide(bird):
-                pass
+                pass# TODO: Define the behavior when the bird collides with a pipe
 
             if pipe.x + pipe.PIPE_TOP.get_width() < 0:
-                rem.append(pipe)
+                rem.append(pipe)# Remove pipes that have moved off the screen
 
             if not pipe.passed and pipe.x <bird.x:
                 pipe.passed = True
-                add_pipe = True
+                add_pipe = True# Add a new pipe when the bird passes through a pipe
             
-            pipe.move()
+            pipe.move()# Move each pipe
         
         if add_pipe:
             score += 1
-            pipes.append(Pipe(600))
+            pipes.append(Pipe(600))# Add a new pipe at a specified position
 
         for r in rem:
-            pipes.remove(r)
+            pipes.remove(r)# Remove pipes that have moved off the screen from the list
 
         if bird.y +bird.img.get_height() > 730:
-            pass
+            pass# TODO: Define the behavior when the bird hits the ground
 
-
-        base.move()
-        draw_window(win, bird, pipes, base, score)
+        base.move()# Move the base
+      
+        draw_window(win, bird, pipes, base, score)# Draw the window with the updated game objects and score
     
-    pygame.quit()
-    quit()
+    pygame.quit()# Uninitialize Pygame modules and free resources
+    quit()# Terminate the program
 
+# Call to main method
 main()
