@@ -112,14 +112,15 @@ class Pipe:
         self.passed = False# Flag to check if the bird has passed the pipe
         self.set_height()# Set the initial height of the gap between the pipes
 
-    # Set a random height for the gap between the pipes
+    # Setting the height of pipes
     def set_height(self):
-        self.height = random.randrange(50, 450)# Calculate the top position of the top pipe
-        self.top = self.height - self.PIPE_TOP.get_height()# Calculate the top position of the bottom pipe
-        self.bottom = self.height + self.GAP
+        self.height = random.randrange(50, 450)# Set a random height for the gap between the pipes
+        self.top = self.height - self.PIPE_TOP.get_height()# Calculate the top position of the top pipe
+        self.bottom = self.height + self.GAP# Calculate the top position of the bottom pipe
 
+    # Method for moving the pipes 
     def move(self):
-        self.x -= self.VEL
+        self.x -= self.VEL# Move the pipe horizontally based on the velocity
 
     def draw(self, win):
         win.blit(self.PIPE_TOP, (self.x, self.top))
