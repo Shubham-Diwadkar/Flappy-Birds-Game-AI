@@ -53,11 +53,10 @@ Then, execute the code, and the game window should open, allowing you to play Fl
 [Note: The code is missing the implementation for collision handling and when the bird touches the ground. You can complete these parts to make the game fully functional.]
 
 ## Output
-
 ### Phase 1
+[Note: The output you are seeing is a .gif image. This is not the actual output, the bird will continue of fly untill the user quits the pygame window]
 
 ![Flappy Bird Phase 1](https://github.com/Shubham-Diwadkar/Flappy-Birds-Game-AI/assets/125255910/daf0f2be-f55c-48fc-ba55-df06e8a0f35a)
-
 
 ## Contributing
 
