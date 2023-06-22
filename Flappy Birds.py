@@ -115,7 +115,7 @@ class Pipe:
     # Set a random height for the gap between the pipes
     def set_height(self):
         self.height = random.randrange(50, 450)# Calculate the top position of the top pipe
-        self.top = self.height - self.PIPE_TOP.get_height()
+        self.top = self.height - self.PIPE_TOP.get_height()# Calculate the top position of the bottom pipe
         self.bottom = self.height + self.GAP
 
     def move(self):
