@@ -22,6 +22,9 @@ WIN_WIDTH = 500
 # Set the height of the game window
 WIN_HEIGHT = 800
 
+# Set the generation count to 0 in the start
+GEN = 0
+
 # Load and scale the bird images
 BIRD_IMGS = [pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird1.png"))),
              pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird2.png"))),
@@ -326,7 +329,7 @@ class Base:
         win.blit(self.IMG, (self.x2, self.y))
 
 # Method for drawing the window
-def draw_window(win, birds, pipes, base, score):
+def draw_window(win, birds, pipes, base, score, gen):
 
     # Draw the background image at the top-left corner of the window
     win.blit(BG_IMG, (0, 0))
@@ -341,6 +344,12 @@ def draw_window(win, birds, pipes, base, score):
     # Draw the score text at the top-right corner of the window
     win.blit(text, (WIN_WIDTH - 10 - text.get_width(), 10))
 
+    # Render the generation text
+    text = STAT_FONT.render("Gen: "+ str(gen), 1, (255, 255, 255))
+
+    # Draw the generation text at the top-left corner of the window
+    win.blit(text, (10, 10))
+
     # Draw the base at its current position
     base.draw(win)
 
@@ -353,6 +362,12 @@ def draw_window(win, birds, pipes, base, score):
 
 # Method to start the program
 def main(genomes, config):
+
+    # Accessing the global variable GEN
+    global GEN
+
+    # Incrementing GEN every time all the birds in the specific generation die
+    GEN += 1
 
     # List to store the neural networks for each genome
     nets = []
@@ -508,7 +523,7 @@ def main(genomes, config):
         base.move()
 
         # Draw the window with the updated game objects and score
-        draw_window(win, birds, pipes, base, score)
+        draw_window(win, birds, pipes, base, score, GEN)
 
 # Method to run the NEAT algorithm
 def run(config_path):
@@ -536,7 +551,7 @@ def run(config_path):
 if __name__ == "__main__":
 
     # Set the path to the configuration file for the NEAT algorithm
-    config_path = path = os.path.join(os.environ["USERPROFILE"],"Desktop", "YOUR_FOLDER_NAME","config_feedforward.txt")
+    config_path = path = os.path.join(os.environ["USERPROFILE"],"Desktop", "AI-Flappy Birds game","config_feedforward.txt")
     
     # Run the `run` function with the provided configuration file path
     run(config_path)
