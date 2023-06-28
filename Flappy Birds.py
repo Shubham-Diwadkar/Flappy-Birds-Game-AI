@@ -551,7 +551,7 @@ def run(config_path):
 if __name__ == "__main__":
 
     # Set the path to the configuration file for the NEAT algorithm
-    config_path = path = os.path.join(os.environ["USERPROFILE"],"Desktop", "AI-Flappy Birds game","config_feedforward.txt")
+    config_path = path = os.path.join(os.environ["USERPROFILE"],"Desktop", "YOUR_FOLDER_NAME","config_feedforward.txt")
     
     # Run the `run` function with the provided configuration file path
     run(config_path)
